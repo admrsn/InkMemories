@@ -41,12 +41,9 @@ echo "Configuring Ink Memories to run as a daemon."
 
 # Interpolate in user-supplied variables into the .service files under
 # /etc/systemd/system.
-#read -p "Enter image source directory path (where the image files to display are located at): " image_src_dir
-image_src_dir=source
-#read -p "Enter the directory of the InkMemories root repository: " ink_memories_root
-ink_memories_root=`pwd`
-#read -p "Enter the name of the shared Google Photos album: " shared_album_name
-shared_album_name=CloudPhotos
+read -p "Enter image source directory path (where the image files to display are located at): " image_src_dir
+read -p "Enter the directory of the InkMemories root repository: " ink_memories_root
+read -p "Enter the name of the shared Google Photos album: " shared_album_name
 
 mkdir -p "${image_src_dir}" 2>&1
 
@@ -57,7 +54,7 @@ for service_file_basename in ink-memories-image-source.service ink-memories-disp
         -e "s|{{SHARED_ALBUM_NAME}}|${shared_album_name}|g" \
         -e "s|{{HOME_DIR}}|${HOME}|g" \
         "./service_files/${service_file_basename}" > /etc/systemd/system/${service_file_basename}
-
+    
     sudo systemctl daemon-reload
     sudo systemctl enable $service_file_basename
     sudo systemctl start $service_file_basename
